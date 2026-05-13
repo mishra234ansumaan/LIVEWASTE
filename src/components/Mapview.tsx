@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
 import { MapPin, AlertTriangle, CheckCircle, Clock, Navigation, Truck, Plus, Minus } from 'lucide-react';
 
 interface MapZone {
@@ -172,7 +172,7 @@ export function MapView() {
           <p className="text-gray-600 mt-1">Live monitoring - {totalReports} active reports in 30km radius</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="ghost">
+          <Button variant="outline">
             <Navigation className="h-4 w-4 mr-2" />
             My Location
           </Button>
@@ -259,41 +259,46 @@ export function MapView() {
                 )}
                 
                 <div className="absolute top-4 right-4 z-40 space-y-2">
-                  <div className="bg-white rounded-lg shadow-lg p-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setMapStyle(mapStyle === 'osm' ? 'satellite' : 'osm');
-                      }}
-                      className="block p-2 hover:bg-gray-100 rounded text-xs font-medium w-full"
-                    >
-                      {mapStyle === 'osm' ? '🛰️ Satellite' : '🗺️ Map'}
-                    </button>
-                  </div>
-                  
-                  <div className="bg-white rounded-lg shadow-lg p-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleZoomIn();
-                      }}
-                      className="block p-2 hover:bg-gray-100 rounded text-xs font-medium w-full disabled:opacity-50"
-                      disabled={zoomLevel >= 18}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                    <div className="border-t my-1" />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleZoomOut();
-                      }}
-                      className="block p-2 hover:bg-gray-100 rounded text-xs font-medium w-full disabled:opacity-50"
-                      disabled={zoomLevel <= 1}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                  </div>
+<div className="bg-white rounded-lg shadow-lg p-2">
+  <button
+    type="button"
+    onClick={(e) => {
+      e.stopPropagation();
+      setMapStyle(mapStyle === 'osm' ? 'satellite' : 'osm');
+    }}
+    className="block p-2 hover:bg-gray-100 rounded text-xs font-medium w-full"
+  >
+    {mapStyle === 'osm' ? '🛰️ Satellite' : '🗺️ Map'}
+  </button>
+</div>
+
+<div className="bg-white rounded-lg shadow-lg p-1">
+  <button
+    type="button"
+    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      handleZoomIn();
+    }}
+    aria-label="Zoom in"
+    className="block p-2 hover:bg-gray-100 rounded text-xs font-medium w-full disabled:opacity-50"
+    disabled={zoomLevel >= 18}
+  >
+    <Plus className="h-4 w-4" />
+  </button>
+  <div className="border-t my-1" />
+  <button
+    type="button"
+    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      handleZoomOut();
+    }}
+    aria-label="Zoom out"
+    className="block p-2 hover:bg-gray-100 rounded text-xs font-medium w-full disabled:opacity-50"
+    disabled={zoomLevel <= 1}
+  >
+    <Minus className="h-4 w-4" />
+  </button>
+</div>
                 </div>
                 
                 <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg px-3 py-2 z-40 flex items-center gap-2">
@@ -412,10 +417,10 @@ export function MapView() {
                 </div>
                 
                 <div className="flex gap-2">
-                  <Button onClick={handleReportSubmit}>
+                  <Button size="sm" onClick={handleReportSubmit} className="flex-1">
                     Submit Report
                   </Button>
-                  <Button variant="ghost" onClick={() => {
+                  <Button size="sm" variant="outline" onClick={() => {
                     setShowReportForm(false);
                     setReportLocation(null);
                   }}>
