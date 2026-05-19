@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
+import { useState, type MouseEvent } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { MapPin, AlertTriangle, CheckCircle, Clock, Navigation, Truck, Plus, Minus } from 'lucide-react';
 
 interface MapZone {
@@ -99,7 +99,7 @@ export function MapView() {
     setShowReportForm(false);
   };
 
-  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMapClick = (e: MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     if (target.closest('.zone-marker') || target.closest('.truck-marker')) {
       return;
@@ -275,7 +275,7 @@ export function MapView() {
 <div className="bg-white rounded-lg shadow-lg p-1">
   <button
     type="button"
-    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+    onClick={(e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       handleZoomIn();
     }}
@@ -288,7 +288,7 @@ export function MapView() {
   <div className="border-t my-1" />
   <button
     type="button"
-    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+    onClick={(e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       handleZoomOut();
     }}

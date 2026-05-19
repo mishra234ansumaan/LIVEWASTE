@@ -1,24 +1,23 @@
-import { useState, type SetStateAction } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Textarea } from '../components/ui/textarea';
-import { Label } from '../components/ui/label';
-import { 
-  CheckCircle, 
-  Camera, 
-  Upload, 
-  Clock, 
-  MapPin, 
-  AlertTriangle, 
-  Truck, 
+import { useState, useRef, type ChangeEvent } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import {
+  CheckCircle,
+  Camera,
+  Upload,
+  Clock,
+  MapPin,
+  AlertTriangle,
+  Truck,
   User,
   Calendar,
-  Image as ImageIcon,
   X,
   Zap,
   Target,
-  Award
+  Award,
 } from 'lucide-react';
 
 interface WorkOrder {
@@ -38,6 +37,8 @@ export function Worker() {
   const [afterImage, setAfterImage] = useState<string | null>(null);
   const [completionNotes, setCompletionNotes] = useState('');
   const [showUploadSection, setShowUploadSection] = useState(false);
+  const beforeInputRef = useRef<HTMLInputElement>(null);
+  const afterInputRef = useRef<HTMLInputElement>(null);
 
   const workOrders: WorkOrder[] = [
     {
@@ -90,7 +91,7 @@ export function Worker() {
     setCompletionNotes('');
   };
 
-  const handleImageUpload = (type: 'before' | 'after', event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (type: 'before' | 'after', event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -232,13 +233,14 @@ export function Worker() {
           {showUploadSection && selectedOrder && (
             <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-0 shadow-xl">
               <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-t-xl">
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-2">
+                  <CardTitle className="flex items-center gap-2 text-white">
                     <Camera className="h-5 w-5" />
                     Complete Work Order
-                  </span>
-                  <Button 
-                    variant="ghost" 
+                  </CardTitle>
+                  <Button
+                    type="button"
+                    variant="ghost"
                     size="sm"
                     onClick={() => {
                       setShowUploadSection(false);
@@ -248,7 +250,7 @@ export function Worker() {
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                </CardTitle>
+                </div>
                 <p className="text-sm text-blue-100">{selectedOrder.location}</p>
               </CardHeader>
               <CardContent className="space-y-4 p-4">
@@ -277,20 +279,22 @@ export function Worker() {
                         <Camera className="h-8 w-8 text-purple-400 mx-auto mb-2" />
                         <p className="text-sm text-gray-600 mb-2">Upload before photo</p>
                         <input
+                          ref={beforeInputRef}
                           type="file"
                           accept="image/*"
                           onChange={(e) => handleImageUpload('before', e)}
+                          aria-label="Upload before photo"
+                          title="Upload before photo"
                           className="hidden"
-                          id="before-upload"
                         />
                         <Button
-  variant="ghost"
-  className="border border-purple-500 text-purple-600 hover:bg-purple-50 text-sm px-3 py-1"
->
-                          <label htmlFor="before-upload" className="cursor-pointer">
-                            <Upload className="h-4 w-4 mr-2" />
-                            Choose File
-                          </label>
+                          type="button"
+                          variant="ghost"
+                          className="border border-purple-500 text-purple-600 hover:bg-purple-50 text-sm px-3 py-1"
+                          onClick={() => beforeInputRef.current?.click()}
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Choose File
                         </Button>
                       </div>
                     )}
@@ -322,20 +326,22 @@ export function Worker() {
                         <Camera className="h-8 w-8 text-green-400 mx-auto mb-2" />
                         <p className="text-sm text-gray-600 mb-2">Upload after photo</p>
                         <input
+                          ref={afterInputRef}
                           type="file"
                           accept="image/*"
                           onChange={(e) => handleImageUpload('after', e)}
+                          aria-label="Upload after photo"
+                          title="Upload after photo"
                           className="hidden"
-                          id="after-upload"
                         />
                         <Button
-  variant="ghost"
-  className="border border-green-500 text-green-600 hover:bg-green-50 text-sm px-3 py-1"
->
-                          <label htmlFor="after-upload" className="cursor-pointer">
-                            <Upload className="h-4 w-4 mr-2" />
-                            Choose File
-                          </label>
+                          type="button"
+                          variant="ghost"
+                          className="border border-green-500 text-green-600 hover:bg-green-50 text-sm px-3 py-1"
+                          onClick={() => afterInputRef.current?.click()}
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Choose File
                         </Button>
                       </div>
                     )}
@@ -347,7 +353,7 @@ export function Worker() {
                   <Label className="text-sm font-medium mb-2 block text-gray-700">Completion Notes</Label>
                   <Textarea
                     value={completionNotes}
-                    onChange={(e: { target: { value: SetStateAction<string>; }; }) => setCompletionNotes(e.target.value)}
+                    onChange={(e) => setCompletionNotes(e.target.value)}
                     placeholder="Add any notes about the work completed..."
                     className="min-h-[80px] border-purple-200 focus:border-purple-500"
                   />

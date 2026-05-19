@@ -1,8 +1,15 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from '../components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+} from '@/components/ui/select';
 import { 
   Trophy, 
   Medal, 
@@ -29,7 +36,7 @@ interface Citizen {
   trend: 'up' | 'down' | 'same';
 }
 
-interface Worker {
+interface WorkerEntry {
   id: number;
   name: string;
   points: number;
@@ -106,7 +113,7 @@ export function Leaderboard() {
     }
   ];
 
-  const topWorkers: Worker[] = [
+  const topWorkers: WorkerEntry[] = [
     {
       id: 1,
       name: 'Rajesh Singh',
@@ -200,12 +207,10 @@ export function Leaderboard() {
         </div>
         <div className="flex items-center gap-4">
           <Select value={selectedZone} onValueChange={setSelectedZone}>
-            <div className="w-48">
-              <SelectTrigger>
-                <MapPin className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Select zone" />
-              </SelectTrigger>
-            </div>
+            <SelectTrigger className="w-48">
+              <MapPin className="h-4 w-4 mr-2 shrink-0" />
+              <SelectValue placeholder="Select zone" />
+            </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 {zones.map((zone) => (
@@ -218,18 +223,16 @@ export function Leaderboard() {
           </Select>
           
           <Select value={timePeriod} onValueChange={setTimePeriod}>
-            <div className="w-32">
-              <SelectTrigger>
-                <Calendar className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Select period" />
-              </SelectTrigger>
-            </div>
+            <SelectTrigger className="w-32">
+              <Calendar className="h-4 w-4 mr-2 shrink-0" />
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-  <SelectItem value="daily">Daily</SelectItem>
-  <SelectItem value="weekly">Weekly</SelectItem>
-  <SelectItem value="monthly">Monthly</SelectItem>
-</SelectGroup>
+                <SelectItem value="daily">Daily</SelectItem>
+                <SelectItem value="weekly">Weekly</SelectItem>
+                <SelectItem value="monthly">Monthly</SelectItem>
+              </SelectGroup>
             </SelectContent>
           </Select>
         </div>

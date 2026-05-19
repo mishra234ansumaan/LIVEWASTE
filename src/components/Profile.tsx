@@ -1,23 +1,37 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Badge } from '../components/ui/badge';
+import { useState, useRef, type ChangeEvent } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { User, Mail, Phone, MapPin, Edit2, Save, Camera, Award, Settings } from 'lucide-react';
+
+const PROFILE_PHOTO_KEY = 'livewaste-profile-photo';
+
+const defaultProfileData = {
+  fullName: 'ANSUL PATNAIK',
+  email: 'ansul@gmail.com',
+  phone: '+91 98765 43210',
+  location: 'Burla, Sambalpur',
+  role: 'Citizen',
+  joinDate: 'January 2024',
+  reports: 23,
+  points: 450,
+};
+
+function loadSavedProfilePhoto(): string | null {
+  try {
+    return localStorage.getItem(PROFILE_PHOTO_KEY);
+  } catch {
+    return null;
+  }
+}
 
 export function Profile() {
   const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
-    fullName: 'ANSUL PATNAIK',
-    email: 'ansul@gmail.com',
-    phone: '+91 98765 43210',
-    location: 'Burla, Sambalpur',
-    role: 'Citizen',
-    joinDate: 'January 2024',
-    reports: 23,
-    points: 450
-  });
+  const [profileImage, setProfileImage] = useState<string | null>(loadSavedProfilePhoto);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [profileData, setProfileData] = useState(defaultProfileData);
 
   const handleSave = () => {
     setIsEditing(false);
@@ -25,22 +39,43 @@ export function Profile() {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setProfileData({
-      fullName: 'ANSUL PATNAIK',
-      email: 'ansul@gmail.com',
-      phone: '+91 98765 43210',
-      location: 'Burla, Sambalpur',
-      role: 'Citizen',
-      joinDate: 'January 2024',
-      reports: 23,
-      points: 450
-    });
+    setProfileData(defaultProfileData);
+  };
+
+  const handlePhotoUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please choose an image file (JPG, PNG, GIF, or WebP).');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image must be smaller than 5MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setProfileImage(result);
+      try {
+        localStorage.setItem(PROFILE_PHOTO_KEY, result);
+      } catch {
+        alert(
+          'Photo updated for this session. It could not be saved to browser storage (file may be too large).',
+        );
+      }
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setProfileData(prev => ({
+    setProfileData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -59,7 +94,7 @@ export function Profile() {
               setIsEditing(true);
             }
           }}
-          variant={isEditing ? "ghost" : "default"}
+          variant={isEditing ? 'ghost' : 'default'}
         >
           {isEditing ? (
             <>
@@ -87,19 +122,41 @@ export function Profile() {
             <CardContent className="space-y-6">
               <div className="flex items-center gap-6">
                 <div className="relative">
-                  <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
-                    <User className="h-12 w-12 text-blue-600" />
+                  <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden border-2 border-blue-200">
+                    {profileImage ? (
+                      <img
+                        src={profileImage}
+                        alt={`${profileData.fullName} profile`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-12 w-12 text-blue-600" />
+                    )}
                   </div>
-                  <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+                  <button
+                    type="button"
+                    onClick={() => photoInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 shadow-md transition-colors"
+                    aria-label="Upload profile photo"
+                    title="Change profile photo"
+                  >
                     <Camera className="h-4 w-4" />
                   </button>
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    title="Upload profile photo"
+                    onChange={handlePhotoUpload}
+                  />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">{profileData.fullName}</h3>
-                  <Badge className="mt-1">
-                    {profileData.role}
-                  </Badge>
-                  <p className="text-sm text-gray-600 mt-1">Member since {profileData.joinDate}</p>
+                  <Badge className="mt-1">{profileData.role}</Badge>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Member since {profileData.joinDate}
+                  </p>
                 </div>
               </div>
 
@@ -109,7 +166,7 @@ export function Profile() {
                   <Input
                     id="fullName"
                     value={profileData.fullName}
-                    onChange={(e: { target: { value: string; }; }) => handleInputChange('fullName', e.target.value)}
+                    onChange={(e) => handleInputChange('fullName', e.target.value)}
                     disabled={!isEditing}
                     className="mt-1"
                   />
@@ -120,7 +177,7 @@ export function Profile() {
                     id="email"
                     type="email"
                     value={profileData.email}
-                    onChange={(e: { target: { value: string; }; }) => handleInputChange('email', e.target.value)}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
                     disabled={!isEditing}
                     className="mt-1"
                   />
@@ -130,7 +187,7 @@ export function Profile() {
                   <Input
                     id="phone"
                     value={profileData.phone}
-                    onChange={(e: { target: { value: string; }; }) => handleInputChange('phone', e.target.value)}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
                     disabled={!isEditing}
                     className="mt-1"
                   />
@@ -140,7 +197,7 @@ export function Profile() {
                   <Input
                     id="location"
                     value={profileData.location}
-                    onChange={(e: { target: { value: string; }; }) => handleInputChange('location', e.target.value)}
+                    onChange={(e) => handleInputChange('location', e.target.value)}
                     disabled={!isEditing}
                     className="mt-1"
                   />
