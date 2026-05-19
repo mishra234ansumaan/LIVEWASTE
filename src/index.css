@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    /* Brand → shadcn/Tailwind tokens (HSL components only) */
     --background: 210 20% 98%;
     --foreground: 220 9% 13%;
     --card: 0 0% 100%;
@@ -25,8 +24,6 @@
     --input: 220 13% 91%;
     --ring: 217 82% 51%;
     --radius: 0.5rem;
-
-    /* Extra brand tokens (optional use in components) */
     --warning: 45 96% 50%;
   }
 }
@@ -34,14 +31,50 @@
 @layer base {
   * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    height: 100%;
+    overflow-x: hidden;
   }
 
   body {
     margin: 0;
-    min-height: 100vh;
+    min-height: 100%;
+    height: 100%;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Prevent horizontal scroll on all screens */
+  .overflow-x-hidden {
+    overflow-x: hidden;
+  }
+
+  /* Better touch targets for mobile */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Smooth scrolling */
+  * {
+    scroll-behavior: smooth;
+  }
+
+  /* Fix iframe on mobile */
+  iframe {
+    max-width: 100%;
   }
 }
