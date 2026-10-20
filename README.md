@@ -24,16 +24,6 @@ LiveWaste empowers citizens to actively participate in maintaining cleanliness b
 - 🏆 Leaderboard to encourage responsible citizen participation  
 - 📊 Centralized monitoring for waste hotspots  
 
----
-
-## Google Technologies Used
-
-- **Google Maps API** – Location visualization and mapping  
-- **Google ML Kit** – AI-based waste image verification  
-- **Firebase (Firestore & Storage)** – Real-time data storage and sync  
-- **Google Cloud Platform** – Scalable backend infrastructure  
-
----
 
 ## MVP / Demo Link
 
@@ -46,8 +36,6 @@ LiveWaste empowers citizens to actively participate in maintaining cleanliness b
 
 - React + TypeScript + Vite  
 - Tailwind CSS  
-- Firebase  
-- Google APIs  
 
 ---
 
